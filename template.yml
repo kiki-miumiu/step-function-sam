@@ -18,3 +18,56 @@ Parameters:
     AllowedPattern: ".+"
     Default: Platform
 Resources:   # Add Resource here
+
+  HelloWorldFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/hello-world/
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      Role: !GetAtt HelloWorldFunctionRole.Arn 
+
+  # create an iam role for lambda function
+  HelloWorldFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+  HelloWorldStateMachine:
+    Type: AWS::Serverless::StateMachine
+    Properties:
+      Name: !Sub "${Name}-${EnvironmentType}"
+      Role: !GetAtt HelloWorldStateMachineRole.Arn  
+      DefinitionUri: statemachine/hello-world.json
+      DefinitionSubstitutions:
+        HelloWorldFunctionArn: !GetAtt HelloWorldFunction.Arn
+      
+  
+  HelloWorldStateMachineRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: states.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: HelloWorldStateMachinePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "lambda:InvokeFunction"
+                Resource:
+                  - !GetAtt HelloWorldFunction.Arn

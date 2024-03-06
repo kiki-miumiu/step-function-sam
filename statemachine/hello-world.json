@@ -1,0 +1,22 @@
+{
+    "Comment": "A simple state machine that prints 'Hello, World!'",
+    "StartAt": "HelloState",
+    "States": {
+        "HelloState": {
+            "Type": "Task",
+            "Resource": "${HelloWorldFunctionArn}",
+            "Parameters": {
+                "State": "Hello"
+            },
+            "Next": "RetryState"
+        },
+        "RetryState": {
+            "Type": "Task",
+            "Resource": "${HelloWorldFunctionArn}",
+            "Parameters": {
+                "State": "Retry"
+            },
+            "End": true
+        }
+    }
+}

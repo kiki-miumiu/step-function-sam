@@ -35,3 +35,8 @@ aws sts get-caller-identity
 aws sts get-caller-identity
 sam build && sam deploy --guided
 ```
+
+## Reference
+
+* [Redrive Announcement](https://aws.amazon.com/about-aws/whats-new/2023/11/aws-step-functions-restarting-workflows-failure/)
+* [Redrive Blog](https://aws.amazon.com/blogs/compute/introducing-aws-step-functions-redrive-a-new-way-to-restart-workflows/#:~:text=Redrive%20works%20for%20Standard%20Workflows,to%20redrive%2C%20and%20choose%20Redrive)
